@@ -13,19 +13,24 @@ using namespace vex;
 competition Competition;
 motor ML = motor(PORT1, ratio18_1);
 motor MR = motor(PORT2, ratio18_1);
+controller C = controller(primary);
 
-motor_group M = motor_group(ML,MR);
-
+// motor_group M = motor_group(ML,MR);
+drivetrain DT = drivetrain(ML, MR);
 
 void pre_auton(void) {
+  // DT.setGearRatio(1/18);
+  DT.setTurnVelocity(20, rpm);  
+  DT.setDriveVelocity(10, rpm);
+
   return;
 }
 
 
 void autonomous(void) {
 
-  M.spin(forward);
-
+  // DT.turnFor(right, 90, deg, true);
+  DT.drive(forward, 50, rpm);
   
 }
 
@@ -51,8 +56,8 @@ int main() {
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
 
-  // Run the pre-autonomous function.
   pre_auton();
+  // C.ButtonA.released(autonomous);
   autonomous();
 
   // Prevent main from exiting with an infinite loop.
