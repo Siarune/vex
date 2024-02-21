@@ -11,13 +11,13 @@
 using namespace vex;
 
 competition Competition;
+controller Controller = controller(primary);
 
 // Set up motors and controls
 motor Left = motor(PORT10, ratio18_1);
-motor Right = motor(PORT1, ratio18_1);
+motor Right = motor(PORT1, ratio18_1, true);
+// motor_group Motors = motor_group(Left, Right);
 drivetrain DT = drivetrain(Left, Right);
-
-controller Controller = controller(primary);
 
 // Instantiate ultrasonic sensor
 triport TriportArray(PORT22);
@@ -36,12 +36,19 @@ void pre_auton(void) {
 void autonomous(void) {
 
   // DT.turnFor(right, 90, deg, true);
-  DT.drive(forward, 50, rpm);
+  // DT.drive(forward, 50, rpm);
+  // DT.turn(right);
   
 }
 
 void usercontrol(void) {
   while (1) {
+
+    int LeftY = Controller.Axis3.position(percent);
+    int RightY = Controller.Axis2.position(percent);
+
+    Left.spin(forward, LeftY, percent);
+    Right.spin(forward, RightY, percent);
 
     wait(20, msec); 
   }
