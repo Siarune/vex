@@ -11,12 +11,18 @@
 using namespace vex;
 
 competition Competition;
-motor ML = motor(PORT1, ratio18_1);
-motor MR = motor(PORT2, ratio18_1);
-controller C = controller(primary);
 
-// motor_group M = motor_group(ML,MR);
-drivetrain DT = drivetrain(ML, MR);
+// Set up motors and controls
+motor Left = motor(PORT10, ratio18_1);
+motor Right = motor(PORT1, ratio18_1);
+drivetrain DT = drivetrain(Left, Right);
+
+controller Controller = controller(primary);
+
+// Instantiate ultrasonic sensor
+triport TriportArray(PORT22);
+sonar Sonar = sonar(TriportArray.G);
+
 
 void pre_auton(void) {
   // DT.setGearRatio(1/18);
@@ -35,29 +41,20 @@ void autonomous(void) {
 }
 
 void usercontrol(void) {
-  // User control code here, inside the loop
   while (1) {
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo
-    // values based on feedback from the joysticks.
 
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
-
-    wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.
+    wait(20, msec); 
   }
 }
 
 int main() {
-  // Set up callbacks for autonomous and driver control periods.
+  // Competition-specific callbacks
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
 
   pre_auton();
-  // C.ButtonA.released(autonomous);
+  // Controller.ButtonA.released(autonomous);  
+  // Sonar.changed(autonomous);
   autonomous();
 
   // Prevent main from exiting with an infinite loop.
