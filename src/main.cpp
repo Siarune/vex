@@ -11,20 +11,22 @@
 using namespace vex;
 
 competition Competition;
-controller Controller = controller(primary);
+brain Brain;
+controller Controller(primary);
 
 // Set up motors and controls
-motor Left = motor(PORT10, ratio18_1);
-motor Right = motor(PORT1, ratio18_1, true);
+motor Left(PORT10, ratio18_1);
+motor Right(PORT1, ratio18_1, true);
 // motor_group Motors = motor_group(Left, Right);
-drivetrain DT = drivetrain(Left, Right);
+drivetrain DT(Left, Right);
 
 // Instantiate ultrasonic sensor
 triport TriportArray(PORT22);
-sonar Sonar = sonar(TriportArray.G);
+sonar Sonar(TriportArray.G);
 
 
 void pre_auton(void) {
+  Brain.Screen.print("Pre-autonomous functions...");
   // DT.setGearRatio(1/18);
   DT.setTurnVelocity(20, rpm);  
   DT.setDriveVelocity(10, rpm);
@@ -34,22 +36,17 @@ void pre_auton(void) {
 
 
 void autonomous(void) {
+  Brain.Screen.clearScreen();
+  Brain.Screen.print("Autonomous functions...");
 
   // DT.turnFor(right, 90, deg, true);
-  // DT.drive(forward, 50, rpm);
+  DT.drive(forward, 50, rpm);
   // DT.turn(right);
   
 }
 
 void usercontrol(void) {
   while (1) {
-
-    int LeftY = Controller.Axis3.position(percent);
-    int RightY = Controller.Axis2.position(percent);
-
-    Left.spin(forward, LeftY, percent);
-    Right.spin(forward, RightY, percent);
-
     wait(20, msec); 
   }
 }
@@ -60,9 +57,10 @@ int main() {
   Competition.drivercontrol(usercontrol);
 
   pre_auton();
-  // Controller.ButtonA.released(autonomous);  
+  Brain.Screen.print("Waiting for input...");
+  Controller.ButtonA.released(autonomous);  
   // Sonar.changed(autonomous);
-  autonomous();
+  // autonomous();
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
