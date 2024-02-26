@@ -22,6 +22,7 @@ drivetrain DT(Left, Right);
 
 // Instantiate ultrasonic sensor
 triport TriportArray(PORT22);
+// analog_in Sense(TriportArray.G);
 sonar Sonar(TriportArray.G);
 
 
@@ -29,21 +30,33 @@ void pre_auton(void) {
   Brain.Screen.print("Pre-autonomous functions...");
   // DT.setGearRatio(1/18);
   DT.setTurnVelocity(20, rpm);  
-  DT.setDriveVelocity(10, rpm);
+  DT.setDriveVelocity(50, rpm);
+  Sonar.setMaximum(150, mm);
 
   return;
 }
 
+void Forward(void) {
+  DT.driveFor(200, mm, true);
+}
+
+void TurnRight(void) {
+  DT.turnFor(right, 90, deg, true);
+}
+
+void TurnLeft(void) {
+  DT.turnFor(left, 90, deg, true);
+}
 
 void autonomous(void) {
-  Brain.Screen.clearScreen();
+  Brain.Screen.clearLine();
   Brain.Screen.print("Autonomous functions...");
+  Brain.Screen.print(Sonar.foundObject());
+  // Brain.Screen.print(Sonar.distance(mm));
 
-  // DT.turnFor(right, 90, deg, true);
-  DT.drive(forward, 50, rpm);
-  // DT.turn(right);
-  
+
 }
+
 
 void usercontrol(void) {
   while (1) {
@@ -57,10 +70,16 @@ int main() {
   Competition.drivercontrol(usercontrol);
 
   pre_auton();
+  Brain.Screen.clearLine();
   Brain.Screen.print("Waiting for input...");
-  Controller.ButtonA.released(autonomous);  
+
+  // while (!Sonar.foundObject()) { 
+  //   wait(100, msec);
+  // }
   // Sonar.changed(autonomous);
-  // autonomous();
+  // Controller.ButtonA.released(autonomous);  
+
+  autonomous();
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
