@@ -7,7 +7,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#include "vex.h"
+#include "../include/vex.h"
 using namespace vex;
 
 competition Competition;
@@ -17,36 +17,29 @@ controller Controller(primary);
 // Set up motors and controls
 motor Left(PORT10, ratio18_1);
 motor Right(PORT1, ratio18_1, true);
-// motor_group Motors = motor_group(Left, Right);
-drivetrain DT(Left, Right);
+drivetrain DT(Left, Right, 320, 230, 130, mm, 1);
 
 // Instantiate ultrasonic sensor
 triport TriportArray(PORT22);
 // analog_in Sense(TriportArray.G);
 sonar Sonar(TriportArray.G);
 
-
 void pre_auton(void) {
   Brain.Screen.print("Pre-autonomous functions...");
-  // DT.setGearRatio(1/18);
-  DT.setTurnVelocity(20, rpm);  
+  DT.setTurnVelocity(20, rpm);
   DT.setDriveVelocity(50, rpm);
-  Sonar.setMaximum(150, mm);
+  Sonar.setMaximum(130, mm);
 
   return;
 }
 
-void Forward(void) {
-  DT.driveFor(200, mm, true);
-}
+void Forward(void) { DT.driveFor(500, mm, true); }
 
-void TurnRight(void) {
-  DT.turnFor(right, 90, deg, true);
-}
+void TurnRight(void) { DT.turnFor(right, 65, deg, true); }
 
-void TurnLeft(void) {
-  DT.turnFor(left, 90, deg, true);
-}
+void TurnLeft(void) { DT.turnFor(left, 65, deg, true); }
+
+void TurnAround(void) { DT.turnFor(right, 180, deg, true); }
 
 void autonomous(void) {
   Brain.Screen.clearLine();
@@ -54,13 +47,16 @@ void autonomous(void) {
   Brain.Screen.print(Sonar.foundObject());
   // Brain.Screen.print(Sonar.distance(mm));
 
+	Forward();
+	TurnRight();
+	TurnRight();
+	Forward();
 
 }
 
-
 void usercontrol(void) {
   while (1) {
-    wait(20, msec); 
+    wait(20, msec);
   }
 }
 
@@ -73,11 +69,11 @@ int main() {
   Brain.Screen.clearLine();
   Brain.Screen.print("Waiting for input...");
 
-  // while (!Sonar.foundObject()) { 
+  // while (!Sonar.foundObject()) {
   //   wait(100, msec);
   // }
   // Sonar.changed(autonomous);
-  // Controller.ButtonA.released(autonomous);  
+  // Controller.ButtonA.released(autonomous);
 
   autonomous();
 
