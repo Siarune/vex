@@ -41,6 +41,26 @@ void TurnLeft(void) { DT.turnFor(left, 65, deg, true); }
 
 void TurnAround(void) { DT.turnFor(right, 180, deg, true); }
 
+int absoluteOrientation = 0;
+/**
+ *	90
+ *180		0
+ *	270
+ */
+
+void TurnEast(void) {
+	if (absoluteOrientation < 180) {
+		DT.turnFor(right, absoluteOrientation, deg, true);
+		absoluteOrientation = 0;
+	}
+
+	if (absoluteOrientation > 180) {
+		DT.turnFor(left, absoluteOrientation-180, deg, true);
+		absoluteOrientation = 0;
+	}
+}
+
+
 void autonomous(void) {
   Brain.Screen.clearLine();
   Brain.Screen.print("Autonomous functions...");
