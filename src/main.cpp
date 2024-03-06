@@ -24,16 +24,25 @@ drivetrain DT(Left, Right, 320, 230, 130, mm, 1);
 void pre_auton(void) {
   Brain.Screen.print("Pre-autonomous functions...");
   DT.setTurnVelocity(20, rpm);
-  DT.setDriveVelocity(50, rpm);
+  DT.setDriveVelocity(30, rpm);
 
   return;
 }
 
 // Directional controls
 void Forward(void) { DT.driveFor(500, mm, true); }
-void TurnRight(void) { DT.turnFor(right, 65, deg, true); }
-void TurnLeft(void) { DT.turnFor(left, 65, deg, true); }
+void Backward(void) { DT.driveFor(-500, mm, true); }
+void TurnRight(void) { DT.turnFor(right, 67, deg, true); }
+void TurnLeft(void) { DT.turnFor(left, 67, deg, true); }
 void TurnAround(void) { DT.turnFor(right, 180, deg, true); }
+void MoveRight(void) { 
+  TurnRight();
+  Forward();
+}
+void MoveLeft(void) {
+  TurnLeft();
+  Forward();
+}
 
 // Pathfinding function
 void autonomous(void) {
@@ -56,9 +65,9 @@ int main() {
 
   pre_auton();
   Brain.Screen.clearLine();
-  // Brain.Screen.print("Waiting for input...");
-  // Controller.ButtonA.released(autonomous);
-  autonomous();
+  Brain.Screen.print("Waiting for input...");
+  Controller.ButtonA.released(autonomous);
+  // autonomous();
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
