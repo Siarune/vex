@@ -1,13 +1,13 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
-/*    Author:       Sia (Aidan Sharp)                                                       */
+/*    Author:       Sia (Aidan Sharp)                                         */
 /*    Created:      2/7/2024, 10:29:18 AM                                     */
 /*    Description:  V5 project                                                */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+#include "vex.h"
 
-#include "../include/vex.h"
 using namespace vex;
 
 // Instantiate coms
@@ -59,7 +59,7 @@ void usercontrol(void) {
 
 
 int main() {
-  // Competition-specific callbacks
+// Competition-specific callbacks
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
 
@@ -70,7 +70,7 @@ int main() {
   // autonomous();
 
   // Prevent main from exiting with an infinite loop.
-  while (true) {
-    wait(100, msec);
-  }
+  while (1) {
+    this_thread::sleep_for(10);
+    }
 }
