@@ -13,7 +13,7 @@ using namespace vex;
 // Instantiate coms
 brain Brain;
 controller Controller(primary);
-distance Distance(PORT11);
+distance Distance(PORT14);
 
 // Set up motors and controls
 motor Left(PORT12, ratio18_1);
