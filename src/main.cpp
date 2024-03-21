@@ -16,8 +16,9 @@ controller Controller(primary);
 distance Distance(PORT11);
 
 // Set up motors and controls
-motor Left(PORT10, ratio18_1);
-motor Right(PORT1, ratio18_1, true);
+motor Left(PORT12, ratio18_1);
+motor Right(PORT11, ratio18_1, true);
+motor Cross(PORT13, ratio18_1);
 drivetrain DT(Left, Right, 320, 230, 130, mm, 1);
 
 // Pre-path setup
@@ -25,32 +26,25 @@ void pre_auton(void) {
   Brain.Screen.print("Pre-autonomous functions...");
   DT.setTurnVelocity(20, rpm);
   DT.setDriveVelocity(30, rpm);
+  Cross.setVelocity(30, rpm);
   this_thread::sleep_for(1000);
 
   return;
 }
 
 // Directional controls
-void Forward(void) { DT.driveFor(500, mm, true); }
-void Backward(void) { DT.driveFor(-500, mm, true); }
-void TurnRight(void) { DT.turnFor(right, 67, deg, true); }
-void TurnLeft(void) { DT.turnFor(left, 67, deg, true); }
-void TurnAround(void) { DT.turnFor(right, 180, deg, true); }
-void MoveRight(void) { 
-  TurnRight();
-  Forward();
-}
-void MoveLeft(void) {
-  TurnLeft();
-  Forward();
-}
+void North(void) { DT.driveFor(500, mm, true); }
+void South(void) { DT.driveFor(-500, mm, true); }
+void East(void) { Cross.spinFor(-.78, rev, true); }
+void West(void) { Cross.spinFor(.78, rev, true); }
 
 // Pathfinding function
 void autonomous(void) {
   Brain.Screen.clearLine();
   Brain.Screen.print("Autonomous functions...");
 
-
+  North();
+  East();
 }
 
 void usercontrol(void) {
@@ -58,7 +52,6 @@ void usercontrol(void) {
     wait(20, msec);
   }
 }
-
 
 int main() {
   pre_auton();
@@ -71,9 +64,8 @@ int main() {
   }
   autonomous();
 
-
   // Prevent main from exiting with an infinite loop.
   while (1) {
     this_thread::sleep_for(10);
-    }
+  }
 }
