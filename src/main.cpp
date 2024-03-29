@@ -13,56 +13,45 @@ using namespace vex;
 // Instantiate coms
 brain Brain;
 controller Controller(primary);
-distance Distance(PORT14);
+distance Distance(PORT20);
 
 // Set up motors and controls
-motor Left(PORT12, ratio18_1);
-motor Right(PORT11, ratio18_1, true);
-motor Cross(PORT13, ratio18_1);
+motor Left(PORT11, ratio18_1);
+motor Right(PORT12, ratio18_1, true);
 drivetrain DT(Left, Right, 320, 230, 130, mm, 1);
 
 // Pre-path setup
 void pre_auton(void) {
-  Brain.Screen.print("Pre-autonomous functions...");
-  DT.setTurnVelocity(20, rpm);
-  DT.setDriveVelocity(30, rpm);
-  Cross.setVelocity(30, rpm);
-  this_thread::sleep_for(1000);
+  Brain.Screen.print("Pre-autonomous setup...");
 
+  DT.setTurnVelocity(30, rpm);
+  DT.setDriveVelocity(30, rpm);
+
+  this_thread::sleep_for(500);
   return;
 }
 
-// Directional controls
-void North(void) { DT.driveFor(500, mm, true); }
-void South(void) { DT.driveFor(-500, mm, true); }
-void East(void) { Cross.spinFor(-.78, rev, true); }
-void West(void) { Cross.spinFor(.78, rev, true); }
+void Enter(void) { DT.driveFor(400, mm, true); }
+void Forward(int t = 1) { DT.driveFor(t * 500, mm, true); }
+void Backward(int t = 1) { DT.driveFor(t * -500, mm, true); }
+void TurnRight(int t = 1) { DT.turnFor(t * 78, deg, true); }
+void TurnLeft(int t = 1) { DT.turnFor(t * -78, deg, true); }
 
-// Pathfinding function
 void autonomous(void) {
   Brain.Screen.clearLine();
   Brain.Screen.print("Autonomous functions...");
-
-  North();
-  East();
-}
-
-void usercontrol(void) {
-  while (1) {
-    wait(20, msec);
-  }
 }
 
 int main() {
   pre_auton();
   Brain.Screen.clearLine();
   Brain.Screen.print("Waiting for input...");
-  // Controller.ButtonA.released(autonomous);
 
-  while (Distance.objectDistance(mm) > 10) {
+  // Controller.ButtonA.released(autonomous);
+  while (Distance.objectDistance(mm) > 20) {
     this_thread::sleep_for(10);
   }
-  autonomous();
+  //   autonomous();
 
   // Prevent main from exiting with an infinite loop.
   while (1) {
